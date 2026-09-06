@@ -31,3 +31,47 @@ class ModelDataset(Dataset):
             torch.tensor(x, dtype=torch.long),
             torch.tensor(y, dtype=torch.long)
         )
+
+class SFTDataset(Dataset):
+    """
+    customized dataset class for loading data into the model
+    """
+
+    def __init__(self, inputs, outputs, block_size, eos_token_id, pad_token_id = -100):
+        """
+            prompts, labels: a list of token IDs  sequences of each sample in the dataset
+            [
+                [token_id_1, token_id_2, ..., token_id_n],
+                [token_id_1, token_id_2, ..., token_id_m],
+                ...
+            ]
+
+        """
+        self.inputs = inputs
+        self.outputs = outputs
+        self.block_size = block_size
+        self.eos_token_id = eos_token_id
+        self.pad_token_id = pad_token_id
+
+    def __len__(self):
+        # one sample is a list of token IDs, so the length of the dataset is the number of samples
+        return len(self.inputs)
+
+    def __getitem__(self, idx):
+        x = self.inputs[idx]
+        y = self.outputs[idx]
+
+        # truncate or pad the sequences to the block_size
+        if len(x) > self.block_size:
+            x = x[:self.block_size]
+            y = y[:self.block_size]
+
+            y[-1] = self.eos_token_id           # make sure the last token is eos
+        else:
+            x = x + [self.eos_token_id] * (self.block_size - len(x))  # pad with eos
+            y = y + [self.pad_token_id] * (self.block_size - len(y))  # pad with -100
+
+        return (
+            torch.tensor(x, dtype=torch.long),
+            torch.tensor(y, dtype=torch.long)
+        )

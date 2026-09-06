@@ -39,26 +39,12 @@ class Tokenizer:
 
 if __name__ == "__main__":
     tokenizer = Tokenizer()
-
+    print(f"eos_token_id: {tokenizer.eos_token_id()}, pad_token_id: {tokenizer.pad_token_id()}")
     ids = tokenizer.encode("Hello, how are you?")
     print("Encoded IDs:", ids)
     print("Decoded text:", tokenizer.decode(ids))
 
+
     ids = tokenizer.encode("Hello, how are you?", add_eos = True)
     print("Encoded IDs with EOS:", ids)
     print("Decoded text with EOS:", tokenizer.decode(ids))
-
-    print("Vocabulary size:", tokenizer.vocab_size())
-    print(tokenizer.encode("你"))
-    print(tokenizer.encode("在"))
-    print(tokenizer.encode("哪"))
-    print(tokenizer.encode("里"))
-    print(tokenizer.encode("你在哪里"))
-
-    print(tokenizer.encode("Transformer"))
-    print(tokenizer.encode("Transform"))
-    print(tokenizer.encode("transform"))
-    print(tokenizer.encode("er"))
-    print(tokenizer.encode("trans"))
-    print(tokenizer.encode("form"))
-    print(tokenizer.encode("former"))

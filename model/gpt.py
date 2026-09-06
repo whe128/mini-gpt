@@ -1,6 +1,5 @@
 # model/gpt.py
 
-import torch
 from torch import nn
 import torch.nn.functional as F
 
@@ -38,17 +37,21 @@ class MiniGPT(nn.Module):
             raise ValueError("Input sequence length must be greater than 0")
 
         past_len = 0 if past_kvs is None else past_kvs[0][0].size(-2)
+
         if past_len + seq_len > self.config.block_size:
             raise ValueError(f"Input sequence length {seq_len} with past length {past_len} exceeds the maximum block size {self.config.block_size}")
 
         # 1. embedding layer
         x = self.token_embedding(x)  # shape: [batch, seq_len, embed_dim]
 
-
+        # new kvs to store the present kvs for each transformer block
         present_kvs = []
         # 2. transformer blocks
         for i, block in enumerate(self.transformer_blocks):
-            x, present_kv = block(x, use_cache, past_kvs)
+
+            past_kv = None if past_kvs is None else past_kvs[i]
+
+            x, present_kv = block(x, use_cache, past_kv)
 
             if use_cache:
                 present_kvs.append(present_kv)

@@ -41,7 +41,7 @@ class CausalSelfAttention(nn.Module):
         past_len = 0
         if past_kv is not None:
             # past_kv[0]: past_k, past_kv[1]: past_v
-            # shape past_kv: [kv, batch, num_heads, past_seq_len, head_dim]
+            # shape past_kv: ([batch, num_heads, past_seq_len, head_dim], [batch, num_heads, past_seq_len, head_dim])
             past_len = past_kv[0].size(2)
 
         # rotate the new q and k with the rotary positional embedding
@@ -89,7 +89,6 @@ class CausalSelfAttention(nn.Module):
         # combine the heads
         # shape attn: [batch, seq_len, embed_dim]
         attn_output = attn.transpose(1,2).contiguous().view(batch_size, seq_len, x.size(-1))
-
 
         present_kv = (k, v) if use_cache else None
 

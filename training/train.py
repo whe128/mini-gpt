@@ -58,7 +58,7 @@ def main():
     cfg = load_config("configs/tiny.yaml")
     set_seed(cfg["seed"])
 
-    device = torch.device("cuda" if torch.cuda.is_available else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Device:", device)
 
     # Tokenizer
