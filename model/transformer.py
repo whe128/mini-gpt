@@ -15,6 +15,8 @@ class TransformerBlock(nn.Module):
         self.norm2 = RMSNorm(config.n_embed)
 
     def forward(self, x, use_cache = False, past_kv = None):
+        residual = x
+
         # input shape: [batch, seq_len, embed_dim]
         # output shape: [batch, seq_len, embed_dim]
         # 1. pre-norm
@@ -24,7 +26,7 @@ class TransformerBlock(nn.Module):
         attn_out, present_kv = self.attn(x, use_cache, past_kv)
 
         # 3. residual connection and
-        x = x + attn_out
+        x = residual + attn_out
 
         # 4. post-norm
         x = self.norm2(x)
