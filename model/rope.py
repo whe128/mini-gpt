@@ -71,8 +71,9 @@ def apply_rotary_pos_emb(q, k, start_pos):
 
     # recover the freqs to the original shape of q and k
     # shape freqs: [seq_len, head_dim]
-    # emb = torch.stack((freqs, freqs), dim = -1).flatten(-2)
-    emb = torch.cat((freqs, freqs), dim = -1)
+
+    # emb = torch.cat((freqs, freqs), dim = -1)
+    emb = torch.stack((freqs, freqs), dim = -1).flatten(-2)
 
     # None is used to add a new dimension to the tensor
     # calculate the cos and sin of the rotation angles
